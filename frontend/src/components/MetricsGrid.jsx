@@ -17,6 +17,7 @@ const MetricsGrid = ({ categoryBreakdown }) => {
     leetcode_problems: Zap,
     open_source: GitBranch,
     competitions: Trophy,
+    certificates: BookOpen,
     cp_rating: TrendingUp,
     projects: Briefcase,
     aptitude: Target,

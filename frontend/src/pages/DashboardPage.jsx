@@ -32,7 +32,21 @@ const DashboardPage = ({ onLogout }) => {
     return null
   }
 
-  const { total_score, max_possible_score, eligibility, category_breakdown, suggestions } = predictionResult
+  const { total_score, max_possible_score, eligibility, category_breakdown, suggestions, placementScores, frontendSuggestions, student } = predictionResult
+
+  const effectiveTotalScore = placementScores?.scaledScore ?? total_score
+  const effectiveMaxScore = placementScores ? 300 : max_possible_score
+  const effectiveEligibility = placementScores
+    ? {
+        ...eligibility,
+        tier: placementScores.placementCategory,
+        color: placementScores.placementColor,
+      }
+    : eligibility
+
+  const combinedSuggestions = Array.from(
+    new Set([...(suggestions || []), ...(frontendSuggestions || [])]),
+  )
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -82,6 +96,15 @@ const DashboardPage = ({ onLogout }) => {
               Placement Eligibility Dashboard
             </h1>
             <p className="text-slate-400 mt-2">Your Performance Analysis & Package Prediction</p>
+            {student && (
+              <div className="mt-3 text-sm text-slate-300 flex flex-wrap gap-3">
+                <span className="font-semibold">{student.name}</span>
+                <span className="text-slate-500">|</span>
+                <span>{student.department}</span>
+                <span className="text-slate-500">|</span>
+                <span>{student.year}</span>
+              </div>
+            )}
           </div>
           <motion.div className="flex items-center gap-3">
             <motion.button
@@ -113,9 +136,9 @@ const DashboardPage = ({ onLogout }) => {
         {/* Main Score Card - Center Focused */}
         <motion.div variants={itemVariants}>
           <ScoreCard
-            totalScore={total_score}
-            maxScore={max_possible_score}
-            eligibility={eligibility}
+            totalScore={effectiveTotalScore}
+            maxScore={effectiveMaxScore}
+            eligibility={effectiveEligibility}
           />
         </motion.div>
 
@@ -131,12 +154,12 @@ const DashboardPage = ({ onLogout }) => {
 
         {/* AI Suggestions Card */}
         <motion.div variants={itemVariants}>
-          <SuggestionsCard suggestions={suggestions} />
+          <SuggestionsCard suggestions={combinedSuggestions} />
         </motion.div>
 
         {/* Eligibility Status Cards */}
         <motion.div variants={itemVariants}>
-          <EligibilityCards currentTier={eligibility.tier} />
+          <EligibilityCards currentTier={effectiveEligibility.tier} />
         </motion.div>
 
         {/* Footer Info */}

@@ -137,11 +137,12 @@ MENTOR_AI/
 ## 📊 How It Works
 
 ### Input Form (Page 1)
-1. Fill 8 fields:
+1. Fill 9 fields:
    - Coding Problems Solved (0-2000)
    - LeetCode Problems (0-3000)
    - Open Source Contribution (dropdown)
    - Competition Level (dropdown)
+   - Certificates (dropdown: none, NPTEL, international, multiple)
    - CP Rating (dropdown)
    - Projects Level (dropdown)
    - Aptitude Score (0-100)
@@ -149,15 +150,15 @@ MENTOR_AI/
 
 2. Click **"Analyze Performance"**
 
-### Scoring Algorithm
-- **8 categories** with weighted formula
-- **Max 300 points** total
-- **Real-time calculation** on backend
+### Scoring & Eligibility
+- **College criteria-based scoring** implemented on the frontend utility
+- **8 core skill bands + certificates**, scaled to **300 max points**
+- **Real-time calculation** on backend + enhanced frontend mapping
 
-**Eligibility Tiers:**
+**Eligibility Tiers (College View):**
 - 🔴 **Below 5 LPA** (< 100 points)
-- 🟡 **5–10 LPA** (100–200 points)
-- 🟢 **Above 10 LPA** (200+ points)
+- 🟡 **5–10 LPA** (100–259 points)
+- 🟢 **Above 10 LPA** (260–300 points)
 
 ### Dashboard (Page 2)
 1. **Score Card**: Animated gauge with current tier

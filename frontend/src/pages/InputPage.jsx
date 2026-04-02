@@ -29,6 +29,7 @@ const InputPage = ({ onLogout }) => {
     projects: 'Beginner',
     aptitude: '',
     skillrank: '',
+    certificates: 'none',
   })
 
   const [errors, setErrors] = useState({})
@@ -99,6 +100,12 @@ const InputPage = ({ onLogout }) => {
       icon: Briefcase,
       options: ['Beginner', 'Intermediate', 'Advanced'],
     },
+    {
+      key: 'certificates',
+      label: 'Certificates',
+      icon: BookOpen,
+      options: ['none', 'NPTEL', 'international', 'multiple'],
+    },
   ]
 
   const handleInputChange = (e) => {
@@ -133,6 +140,14 @@ const InputPage = ({ onLogout }) => {
       }
     })
 
+    // All dropdowns are required; ensure they have a value
+    const requiredDropdowns = ['open_source', 'competitions', 'cp_rating', 'projects', 'certificates']
+    requiredDropdowns.forEach(field => {
+      if (!formData[field]) {
+        newErrors[field] = 'This field is required'
+      }
+    })
+
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -160,6 +175,8 @@ const InputPage = ({ onLogout }) => {
         projects: formData.projects,
         aptitude: parseFloat(formData.aptitude),
         skillrank: parseFloat(formData.skillrank),
+        // Extra frontend-only field – ignored by backend but used for college scoring
+        certificates: formData.certificates,
       }
 
       const result = await predictionAPI.predict(dataToSend)
@@ -243,6 +260,15 @@ const InputPage = ({ onLogout }) => {
           <p className="text-lg text-slate-400">
             Analyze your skills and predict your placement eligibility
           </p>
+          <motion.button
+            type="button"
+            onClick={() => navigate('/upload')}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-600/60 text-sm text-slate-200 hover:bg-slate-800/60 transition-all"
+          >
+            <span>Switch to file-based evaluation</span>
+          </motion.button>
         </motion.div>
 
         {/* Form Card */}
@@ -274,13 +300,17 @@ const InputPage = ({ onLogout }) => {
                   transition={{ delay: idx * 0.05 }}
                   className="group"
                 >
-                  <label className="flex items-center gap-2 text-sm font-medium text-slate-300 mb-2">
+                  <label
+                    htmlFor={field.key}
+                    className="flex items-center gap-2 text-sm font-medium text-slate-300 mb-2"
+                  >
                     <Icon size={16} className="text-brand-blue group-hover:text-brand-purple transition-all" />
                     {field.label}
                   </label>
                   <input
                     type={field.type}
                     name={field.key}
+                    id={field.key}
                     placeholder={field.placeholder}
                     min={field.min}
                     max={field.max}
@@ -312,14 +342,20 @@ const InputPage = ({ onLogout }) => {
                   transition={{ delay: (idx + 4) * 0.05 }}
                   className="group"
                 >
-                  <label className="flex items-center gap-2 text-sm font-medium text-slate-300 mb-2">
+                  <label
+                    htmlFor={field.key}
+                    className="flex items-center gap-2 text-sm font-medium text-slate-300 mb-2"
+                  >
                     <Icon size={16} className="text-brand-blue group-hover:text-brand-purple transition-all" />
                     {field.label}
                   </label>
                   <select
                     name={field.key}
+                    id={field.key}
                     value={formData[field.key]}
                     onChange={handleInputChange}
+                    aria-required="true"
+                    aria-invalid={Boolean(errors[field.key])}
                     className="w-full px-4 py-3 rounded-lg bg-slate-900/50 border border-slate-700/50 hover:border-slate-600/50 focus:border-brand-blue text-white focus:scale-105 transition-all duration-300 cursor-pointer appearance-none"
                     style={{
                       backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
@@ -334,6 +370,9 @@ const InputPage = ({ onLogout }) => {
                       </option>
                     ))}
                   </select>
+                  {errors[field.key] && (
+                    <p className="text-red-400 text-xs mt-1">{errors[field.key]}</p>
+                  )}
                 </motion.div>
               )
             })}

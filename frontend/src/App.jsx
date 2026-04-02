@@ -4,6 +4,7 @@ import { PredictionProvider } from './context/PredictionContext'
 import LoginPage from './pages/LoginPage'
 import InputPage from './pages/InputPage'
 import DashboardPage from './pages/DashboardPage'
+import FileUploadPage from './pages/FileUploadPage'
 import { predictionAPI } from './utils/api'
 
 function App() {
@@ -79,10 +80,22 @@ function App() {
             element={isAuthenticated ? <InputPage onLogout={handleLogout} /> : <Navigate to="/" replace />} 
           />
 
+          {/* Alias route for analyzer to match specification */}
+          <Route
+            path="/analyze"
+            element={isAuthenticated ? <InputPage onLogout={handleLogout} /> : <Navigate to="/" replace />}
+          />
+
           {/* Protected dashboard route */}
           <Route 
             path="/dashboard" 
             element={isAuthenticated ? <DashboardPage onLogout={handleLogout} /> : <Navigate to="/" replace />} 
+          />
+
+          {/* File-based upload route */}
+          <Route
+            path="/upload"
+            element={isAuthenticated ? <FileUploadPage onLogout={handleLogout} /> : <Navigate to="/" replace />}
           />
 
           {/* Catch all - redirect to home */}
